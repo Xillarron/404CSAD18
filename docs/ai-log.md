@@ -242,3 +242,82 @@ Chat, повним циклом, перевіркою, ручною збірко
 Виконуваний TypeScript-проєкт, npm manifest і scripts, тести, CI runner-скрипти
 та workflow іще не створені. Для їх генерації та перевірки передбачені
 відповідні команди етапів.
+
+## Запит 4. Повна ініціалізація проєкту через оркестратор init
+
+### Промпт користувача:
+
+```text
+Виконай команду оркестратора .github/prompts/init.prompt.md для повної ініціалізації проєкту (Варіант 6: TypeScript, npm scripts, Vitest):
+
+Послідовно виконай усі етапи за інструкціями:
+1. git-init: перевір стан репозиторію, створи кореневий .gitignore (виключи node_modules/, dist/, *.log, .DS_Store).
+2. create-project: згенеруй валідний package.json ("name": "404csad18", "type": "module", "private": true), tsconfig.json (strict: true, outDir: "./dist", rootDir: "./src", target: "ES2022", moduleResolution: "NodeNext") та src/index.ts із функціями hello() і add(a, b).
+3. create-build: встанови залежності розробки (typescript, vitest), налаштуй npm scripts ("build": "tsc", "test": "vitest run"), створи тести tests/index.test.ts.
+4. create-actions: створи runner-скрипти scripts/ci.sh та scripts/ci.bat, а також workflow .github/workflows/ci.yml із матрицею для ubuntu-latest, windows-latest, macos-latest (workflow має запускати саме скрипти).
+5. check: запусти локальну компіляцію tsc та тести vitest, переконайся, що все проходить на 100%.
+
+Онови docs/ai-log.md, додавши запис про запуск оркестратора init, створені файли та результати перевірки.
+```
+
+### Дія та відповідь AI:
+
+Оркестратор виконано послідовно. Перевірено стан Git (репозиторій clean до
+ініціалізації), створено `.gitignore`, мінімальний TypeScript-проєкт,
+встановлено `typescript` і `vitest`, налаштовано build/test scripts і додано
+тести `add` та `hello`. Створено Bash і Windows batch CI scripts та workflow
+GitHub Actions з матрицею Ubuntu, Windows і macOS. Наприкінці оновлено цей
+журнал результатами.
+
+### Створені файли:
+
+- `.gitignore`
+- `package.json` і `package-lock.json`
+- `tsconfig.json`
+- `src/index.ts`
+- `tests/index.test.ts`
+- `scripts/ci.sh` і `scripts/ci.bat`
+- `.github/workflows/ci.yml`
+
+### Результати перевірки:
+
+- `npm install --save-dev typescript vitest` — успішно; встановлено
+  TypeScript `^7.0.2` і Vitest `^5.0.5`, аудит повідомив про 0
+  вразливостей.
+- `npm run build` (`tsc`) — успішно, код завершення 0.
+- `npm test` (`vitest run`) — успішно: 1 файл тестів, 2 з 2 тестів пройшли.
+- `scripts/ci.bat` — успішно виконано в Windows; `npm ci`, збірка й обидва
+  тести завершилися з кодом 0.
+- `package.json` розпарсено, обов'язкові поля та scripts перевірено;
+  залежності manifest узгоджуються з `package-lock.json`.
+- Workflow переглянуто структурно: матриця містить усі три запитані runners,
+  Unix runners викликають `bash scripts/ci.sh`, Windows — `scripts\ci.bat`.
+  Формальний YAML validator та hosted GitHub Actions запуск не виконувалися,
+  тому їхній результат не заявляється.
+
+### Виявлена проблема та виправлення:
+
+Під час перевірки виявлено дубльований ключ `devDependencies` у
+`package.json`: ключ залишився від редагування scaffold після виконання
+`npm install`. Видалено зайвий блок, збережено фактичні версії залежностей,
+зафіксовані у lock-файлі, після чого повторно успішно виконано перевірку
+manifest, `npm run build` і `npm test`.
+
+### Прийняті рішення:
+
+- У `tsconfig.json` задано і `"module": "NodeNext"`, і
+  `"moduleResolution": "NodeNext"` для сумісної конфігурації модулів; збірка
+  обмежена каталогом `src`, а згенерований `dist/` виключений через
+  `.gitignore`.
+- На Windows перевірено саме batch wrapper. Bash runner і hosted matrix на
+  Linux/macOS не запускалися локально.
+- Вимогу «100%» трактовано як успішне проходження всіх створених тестів (2/2),
+  а не як окремий відсоток покриття коду: coverage-звіт не запускали.
+
+## Поточний стан
+
+Проєкт ініціалізований: manifest, lock-файл, TypeScript source, Vitest тести,
+обидва CI runner scripts і workflow створені. Локальна TypeScript збірка та
+всі наявні тести проходять. Перевірено Windows CI wrapper; Unix runner і
+віддалена матриця GitHub Actions потребують виконання у відповідних
+середовищах.

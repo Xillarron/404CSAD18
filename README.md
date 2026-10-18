@@ -21,11 +21,11 @@ TypeScript-проєкту: підготовки структури, запуск
 
 ### Команди
 
-Цільові команди проєкту:
+Команди проєкту:
 
-- `npm ci` — встановити зафіксовані залежності, якщо наявний `package-lock.json`.
+- `npm ci` — встановити зафіксовані залежності з `package-lock.json`.
 - `npm run build` — зібрати TypeScript-проєкт.
-- `npm test -- --run` — одноразово запустити тести Vitest.
+- `npm test` — одноразово запустити тести Vitest.
 - `npm run typecheck` і `npm run lint` — виконати перевірки, якщо ці scripts
   налаштовані в `package.json`.
 
@@ -35,9 +35,9 @@ TypeScript-проєкту: підготовки структури, запуск
 - `gh run list` — останні запуски.
 - `gh run view <run-id> --log` — журнал вибраного запуску.
 
-Маніфест агента й описи skills уже створені. `package.json`, npm scripts,
-конфігурація Vitest і workflow ще не реалізовані, тому наведені команди є
-цільовим контрактом і стануть доступними після відповідної реалізації.
+TypeScript-проєкт, npm scripts, Vitest тести та GitHub Actions workflow
+ініціалізовані. Щоб відтворити CI локально, запустіть `bash scripts/ci.sh`
+на Linux/macOS або `scripts\ci.bat` у Windows.
 
 ## Запуск
 
