@@ -112,17 +112,14 @@ Skill передає оркестратору знайдені workflows, ста
 
 ## Запуск
 
-Після реалізації конфігурації проєкту типовий локальний цикл запуску такий:
+Поточний локальний цикл запуску:
 
-1. Переконатися, що репозиторій містить `package.json` і, для `npm ci`,
-   `package-lock.json`.
-2. Встановити залежності командою `npm ci`.
-3. Запустити налаштовані перевірки: `npm run build` і
-   `npm test -- --run`. `npm run typecheck` та `npm run lint` виконувати лише
-   якщо такі scripts визначені.
-4. У VS Code обрати агента `build-engineer` після додавання його опису до
-   `.github/agents/` і надати задачу природною мовою.
+1. Установити зафіксовані залежності командою `npm ci`.
+2. Запустити збірку `npm run build` і Vitest тести `npm test`.
+3. Для локального запуску CI wrapper на Linux/macOS використати
+   `bash scripts/ci.sh`, а у Windows — `scripts\ci.bat`.
+4. У VS Code обрати агента `build-engineer` і надати задачу природною мовою.
 
-Маніфест агента й описи skills уже створені. `package.json`, npm scripts,
-конфігурація Vitest, CI scripts і workflow поки не реалізовані; ця інструкція
-описує запланований цикл, а не вже доступний виконуваний запуск.
+GitHub Actions виконує обидва runner scripts на матриці
+`ubuntu-latest`, `windows-latest` і `macos-latest`. Результати локальних
+перевірок не замінюють перевірку всіх віддалених runners.
